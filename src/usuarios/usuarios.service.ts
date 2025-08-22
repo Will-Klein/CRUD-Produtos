@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
+import { SignupDTO } from 'src/auth/dto/signup.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { PrismaService } from 'src/prisma.service';
 
@@ -7,13 +7,13 @@ import { PrismaService } from 'src/prisma.service';
 export class UsuariosService {
   constructor(private prisma: PrismaService) {}
   
-  async createAdmin(dto: CreateUsuarioDto) {
+  async createAdmin(dto: SignupDTO) {
     return await this.prisma.usuarios.create({
       data: {
         nome: dto.nome,
         email: dto.email,
-        senha: dto.senha,
-        role: { connect: { nome: 'ADMIN' } } //CONECTA a um registro já existente com o nome especificado.
+        senha: dto.password,
+        role: { connect: { nome: dto.role } } //CONECTA a um registro já existente com o nome especificado.
       },
       select: {
         id: true,
@@ -95,8 +95,8 @@ export class UsuariosService {
     return await this.prisma.usuarios.delete({where: {id}});
   }
 
-  findByEmailAuth(email: string) {
-    return this.prisma.usuarios.findUnique({
+  async findByEmailAuth(email: string) {
+    return await this.prisma.usuarios.findUnique({
       where: {email: email},
       include: { role: {  //inclui os dados da tabela rol
         select: { nome: true} //seleciona apenas o nome da role
@@ -104,8 +104,8 @@ export class UsuariosService {
     });
   }
 
-  findByEmail(email: string) {
-    return this.prisma.usuarios.findUnique({
+  async findByEmail(email: string) {
+    return await this.prisma.usuarios.findUnique({
       where: {email : email},
       select: {
         id: true,

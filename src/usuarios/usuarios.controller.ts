@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
+import { SignupDTO } from 'src/auth/dto/signup.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
@@ -13,8 +13,8 @@ export class UsuariosController {
 
   @Roles('ADMIN')
   @Post('create/admin')
-  create(@Body() createUsuarioDto: CreateUsuarioDto, ) {   
-    return this.usuariosService.createAdmin(createUsuarioDto);
+  create(@Body() dto: SignupDTO, ) {   
+    return this.usuariosService.createAdmin(dto);
   }
 
   @Roles('ADMIN')

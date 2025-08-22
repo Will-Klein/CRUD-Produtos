@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
 import { JwtService } from '@nestjs/jwt';
+import { SignupDTO } from './dto/signup.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,5 +22,17 @@ export class AuthService {
         return {
             acess_token: await this.jwtService.sign(payload),
         };
+    }
+
+    async signUp(dto : SignupDTO) {
+        const userAlreadyExists = await this.usuariosService.findByEmailAuth(dto.email);
+
+        if (userAlreadyExists){
+            throw new UnauthorizedException('E-mail já cadastrado');
+        }
+
+        const user = await this.usuariosService.createAdmin(dto);
+
+        return user
     }
 }
