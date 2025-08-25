@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SignupDTO } from 'src/auth/dto/signup.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { PrismaService } from 'src/prisma.service';
+//import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsuariosService {
@@ -56,6 +57,7 @@ export class UsuariosService {
   }
 
   update(id: number, dto: UpdateUsuarioDto) {
+    //dto.password = await bcrypt.hash(dto.password, 10);
     return this.prisma.usuarios.update({
       where: { id: id },
       data: {
@@ -72,6 +74,7 @@ export class UsuariosService {
   }
 
   async updateMe(dto: UpdateUsuarioDto, id: number){
+    //dto.password = await bcrypt.hash(dto.password, 10);
     return await this.prisma.usuarios.update({
       where: {id},
       data: {
@@ -98,9 +101,12 @@ export class UsuariosService {
   async findByEmailAuth(email: string) {
     return await this.prisma.usuarios.findUnique({
       where: {email: email},
-      include: { role: {  //inclui os dados da tabela rol
-        select: { nome: true} //seleciona apenas o nome da role
-      }},
+      select: {
+        id: true,
+        email:true,
+        senha: true,
+        role: { select: { nome: true }},
+      }
     });
   }
 

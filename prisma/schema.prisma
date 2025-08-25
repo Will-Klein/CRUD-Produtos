@@ -27,7 +27,7 @@ model usuarios {
   id       Int        @id @default(autoincrement())
   nome     String     @db.VarChar(50)
   email    String     @unique @db.VarChar(100)
-  senha    String     @db.VarChar(50)
+  senha    String     @db.VarChar(254)
   produtos produtos[]
   role_id  Int
   role     roles      @relation(fields: [role_id], references: [id])
